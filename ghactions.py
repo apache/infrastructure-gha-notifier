@@ -41,7 +41,7 @@ GitHub Actions via GitBox
 """
 
 JOB_SUCCEEDED = """
-[GitHub] [{job_repo}]: Workflow run "{job_name}" succeeded again!
+[GitHub] [{job_repo}]: Workflow run "{job_name}" was fixed!
 --
 The GitHub Actions job "{job_name}" on {job_repo}.git has succeeded.
 Run started by GitHub user {job_actor} (triggered by {job_trigger}).
@@ -88,6 +88,7 @@ def parse_payload(run):
         asfpy.messaging.mail(
             sender="GitBox <git@apache.org>", recipient=recipient, subject=subject, message=text
         )
+        jobs[job_id] = JOB_STATUS_FAILURE
     elif jobs[job_id] != job_status and job_status == JOB_STATUS_SUCCESS:  # Status change, notify!
         subject, text = JOB_SUCCEEDED.split("--", 1)
         subject = subject.format(**locals()).strip()
@@ -95,7 +96,7 @@ def parse_payload(run):
         asfpy.messaging.mail(
             sender="GitBox <git@apache.org>", recipient=recipient, subject=subject, message=text
         )
-    jobs[job_id] = job_status
+        jobs[job_id] = JOB_STATUS_SUCCESS
     return f"{job_repo} {job_id} {job_status}"
 
 
@@ -103,9 +104,7 @@ def main():
 
     # Grab all GitHub WebHook IP ranges
     webhook_ips = requests.get("https://api.github.com/meta").json()["hooks"]
-    allowed_ips = list()
-    for ip in webhook_ips:
-        allowed_ips.append(netaddr.IPNetwork(ip))
+    allowed_ips = [netaddr.IPNetwork(ip) for ip in webhook_ips]
 
     # Init Flask...
     app = flask.Flask(__name__)
