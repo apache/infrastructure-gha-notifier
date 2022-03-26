@@ -88,7 +88,7 @@ def parse_payload(run):
     trigger_email = run.get("head_commit", {}).get("author", {}).get("email", "??")
     recipient = get_recipient(job_repo)
     if not recipient:  # No address configured, skip!
-        return
+        return f"[skipped] {job_repo} {job_id} {job_status}"
     if job_id not in jobs:
         jobs[job_id] = job_status
     if job_status == JOB_STATUS_FAILURE:  # Always notify on failure
