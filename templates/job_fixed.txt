@@ -1,0 +1,13 @@
+[GitHub] [{job_repo}]: Workflow run "{job_name}" is working again!
+--
+The GitHub Actions job "{job_name}" on {job_repo}.git has succeeded.
+Run started by GitHub user {job_actor} (triggered by {job_trigger}).
+
+Head commit for run:
+{trigger_hash} / {trigger_author} <{trigger_email}>
+{trigger_log}
+
+Report URL: {job_url}
+
+With regards,
+GitHub Actions via GitBox
