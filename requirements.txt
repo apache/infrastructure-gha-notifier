@@ -2,3 +2,4 @@ netaddr
 requests
 flask
 asfpy
+pyyaml
