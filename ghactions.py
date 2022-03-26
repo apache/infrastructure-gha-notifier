@@ -25,38 +25,8 @@ import yaml
 """Simple GHA Workflow Status Notifier"""
 
 
-JOB_FAILED = """
-[GitHub] [{job_repo}]: Workflow run "{job_name}" failed!
--- 
-The GitHub Actions job "{job_name}" on {job_repo}.git has failed.
-Run started by GitHub user {job_actor} (triggered by {job_trigger}).
-
-Head commit for run:
-{trigger_hash} / {trigger_author} <{trigger_email}>
-{trigger_log}
-
-Report URL: {job_url}
-
-With regards,
-GitHub Actions via GitBox
-"""
-
-JOB_SUCCEEDED = """
-[GitHub] [{job_repo}]: Workflow run "{job_name}" was fixed!
---
-The GitHub Actions job "{job_name}" on {job_repo}.git has succeeded.
-Run started by GitHub user {job_actor} (triggered by {job_trigger}).
-
-Head commit for run:
-{trigger_hash} / {trigger_author} <{trigger_email}>
-{trigger_log}
-
-Report URL: {job_url}
-
-With regards,
-GitHub Actions via GitBox
-"""
-
+JOB_FAILED = open("templates/job_failed.txt").read()
+JOB_SUCCEEDED = open("templates/job_fixed.txt").read()
 JOB_STATUS_SUCCESS = "success"
 JOB_STATUS_FAILURE = "failure"
 
