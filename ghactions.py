@@ -20,6 +20,7 @@ import asfpy.messaging
 import netaddr
 import requests
 import logging
+import yaml
 
 """Simple GHA Workflow Status Notifier"""
 
@@ -61,9 +62,16 @@ JOB_STATUS_FAILURE = "failure"
 
 jobs = {}
 
-
 def get_recipient(repo):
-    return "<gnomes@infra.apache.org>"  # Just gnomes for now!
+    try:
+        resp = requests.get(f"https://gitbox.apache.org/x1/repos/asf/{repo}.git/notifications.yaml")
+        if resp and resp.status_code == 200:
+            yml = yaml.safe_load(resp.text)
+            if "jobs" in yml:
+                return yml["jobs"]
+    except:  # misc breakages, ignore - this isn't an important service.
+        pass
+    return None
 
 
 def parse_payload(run):
@@ -79,6 +87,8 @@ def parse_payload(run):
     trigger_author = run.get("head_commit", {}).get("author", {}).get("name", "??")
     trigger_email = run.get("head_commit", {}).get("author", {}).get("email", "??")
     recipient = get_recipient(job_repo)
+    if not recipient:  # No address configured, skip!
+        return
     if job_id not in jobs:
         jobs[job_id] = job_status
     if job_status == JOB_STATUS_FAILURE:  # Always notify on failure
