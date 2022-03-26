@@ -20,7 +20,6 @@ import asfpy.messaging
 import netaddr
 import requests
 import logging
-import sys
 
 """Simple GHA Workflow Status Notifier"""
 
@@ -97,7 +96,7 @@ def parse_payload(run):
             sender="GitBox <git@apache.org>", recipient=recipient, subject=subject, message=text
         )
     jobs[job_id] = job_status
-    sys.stderr.write(f"{job_repo} {job_id} {job_status}\n")
+    return f"{job_repo} {job_id} {job_status}"
 
 
 def main():
@@ -120,12 +119,13 @@ def main():
         content = flask.request.json
         act = content.get("action")
         if act == "completed" and "workflow_run" in content:
-            parse_payload(content["workflow_run"])
+            logmsg = parse_payload(content["workflow_run"])
+            log.log(level=logging.WARNING, msg=logmsg)
         return "Delivered\n"
 
     # Disable werkzeug request logging to stdout
     log = logging.getLogger("werkzeug")
-    log.setLevel(logging.ERROR)
+    log.setLevel(logging.WARNING)
 
     # Start up the app
     app.run(host="0.0.0.0", port=8083, debug=False)
