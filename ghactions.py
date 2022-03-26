@@ -20,6 +20,7 @@ import asfpy.messaging
 import netaddr
 import requests
 import logging
+import sys
 
 """Simple GHA Workflow Status Notifier"""
 
@@ -93,7 +94,7 @@ def parse_payload(run):
             sender="GitBox <git@apache.org>", recipient=recipient, subject=subject, message=text
         )
     jobs[job_id] = job_status
-    print(job_repo, job_id, job_status)
+    sys.stderr.write(f"{job_repo} {job_id} {job_status}\n")
 
 
 def main():
