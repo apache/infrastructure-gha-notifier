@@ -85,7 +85,7 @@ def parse_payload(run):
         asfpy.messaging.mail(
             sender="GitBox <git@apache.org>", recipient=recipient, subject=subject, message=text
         )
-    elif jobs[job_id] != job_status and job_status == "succeess":  # Status change, notify!
+    elif jobs[job_id] != job_status and job_status == "success":  # Status change, notify!
         subject, text = JOB_SUCCEEDED.split("--", 1)
         subject = subject.format(**locals()).strip()
         text = text.format(**locals()).strip()
