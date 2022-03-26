@@ -57,6 +57,9 @@ With regards,
 GitHub Actions via GitBox
 """
 
+JOB_STATUS_SUCCESS = "success"
+JOB_STATUS_FAILURE = "failure"
+
 jobs = {}
 
 
@@ -79,14 +82,14 @@ def parse_payload(run):
     recipient = get_recipient(job_repo)
     if job_id not in jobs:
         jobs[job_id] = job_status
-    if job_status == "failure":  # Always notify on failure
+    if job_status == JOB_STATUS_FAILURE:  # Always notify on failure
         subject, text = JOB_FAILED.split("--", 1)
         subject = subject.format(**locals()).strip()
         text = text.format(**locals()).strip()
         asfpy.messaging.mail(
             sender="GitBox <git@apache.org>", recipient=recipient, subject=subject, message=text
         )
-    elif jobs[job_id] != job_status and job_status == "success":  # Status change, notify!
+    elif jobs[job_id] != job_status and job_status == JOB_STATUS_SUCCESS:  # Status change, notify!
         subject, text = JOB_SUCCEEDED.split("--", 1)
         subject = subject.format(**locals()).strip()
         text = text.format(**locals()).strip()
