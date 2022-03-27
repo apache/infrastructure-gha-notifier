@@ -91,7 +91,7 @@ def main():
 
     @app.route("/hook", methods=["POST", "PUT"])
     def parse_request():
-        this_ip = netaddr.IPAddress(flask.request.remote_addr)
+        this_ip = netaddr.IPAddress(flask.request.headers.get("X-Forwarded-For") or flask.request.remote_addr)
         allowed = any(this_ip in ip for ip in allowed_ips)
         if not allowed:
             return "No content\n"
