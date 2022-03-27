@@ -107,7 +107,7 @@ def main():
     log.setLevel(logging.WARNING)
 
     # Start up the app
-    app.run(host="0.0.0.0", port=8083, debug=False)
+    app.run(host="127.0.0.1", port=8083, debug=False)
 
 
 if __name__ == "__main__":
