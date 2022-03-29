@@ -21,6 +21,8 @@ import netaddr
 import requests
 import logging
 import yaml
+import os
+import time
 
 """Simple GHA Workflow Status Notifier"""
 
@@ -29,18 +31,24 @@ JOB_FAILED = open("templates/job_failed.txt").read()
 JOB_SUCCEEDED = open("templates/job_fixed.txt").read()
 JOB_STATUS_SUCCESS = "success"
 JOB_STATUS_FAILURE = "failure"
-
+REPO_ROOT = "/x1/repos/asf"
 jobs = {}
 
 def get_recipient(repo):
-    try:
-        resp = requests.get(f"https://gitbox.apache.org/x1/repos/asf/{repo}.git/notifications.yaml")
-        if resp and resp.status_code == 200:
-            yml = yaml.safe_load(resp.text)
-            if "jobs" in yml:
-                return yml["jobs"]
-    except:  # misc breakages, ignore - this isn't an important service.
-        pass
+    yaml_path = os.path.join(REPO_ROOT, f"{repo}.git", "notifications.yaml")
+    if time.time() > 1649016000 and os.path.exists(yaml_path):  # Only active after 3rd of april 2022
+        yml = yaml.safe_load(open(yaml_path, "r").read())
+        if "jobs" in yml:
+            return yml["jobs"]
+    elif time.time() < 1649016000:  # Not active after 3rd of april 2022
+        try:
+            resp = requests.get(f"https://gitbox.apache.org/x1/repos/asf/{repo}.git/notifications.yaml")
+            if resp and resp.status_code == 200:
+                yml = yaml.safe_load(resp.text)
+                if "jobs" in yml:
+                    return yml["jobs"]
+        except:  # misc breakages, ignore - this isn't an important service.
+            pass
     return None
 
 
