@@ -1,5 +1,5 @@
 netaddr
 requests
 flask
-asfpy
+asfpy>=0.37
 pyyaml
