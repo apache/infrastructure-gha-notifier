@@ -47,7 +47,7 @@ def get_recipient(repo):
                 yml = yaml.safe_load(resp.text)
                 if "jobs" in yml:
                     return yml["jobs"]
-        except:  # misc breakages, ignore - this isn't an important service.
+        except Exception:  # misc breakages, ignore all but fatal exceptions - this isn't an important service.
             pass
     return None
 
