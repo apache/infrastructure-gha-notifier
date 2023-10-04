@@ -1,4 +1,4 @@
-[GitHub] [{job_repo}]: Workflow run "{job_name}" is working again!
+[GH] ({job_repo}): Workflow run "{job_name}" is working again!
 --
 The GitHub Actions job "{job_name}" on {job_repo}.git has succeeded.
 Run started by GitHub user {job_actor} (triggered by {job_trigger}).
