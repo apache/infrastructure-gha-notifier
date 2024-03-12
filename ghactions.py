@@ -32,7 +32,6 @@ JOB_SUCCEEDED = open("templates/job_fixed.txt").read()
 JOB_STATUS_SUCCESS = "success"
 JOB_STATUS_FAILURE = "failure"
 REPO_ROOT = "/x1/repos/asf"
-JOB_QUEUE_DIR = "/x1/ghajobs"
 jobs = {}
 
 def get_recipient(repo):
@@ -70,9 +69,20 @@ def parse_payload(run):
     # Log job api url for usage stats later on
     job_api_url = run.get("jobs_url", "")
     if job_api_url and build_id:
-        job_file = os.path.join(JOB_QUEUE_DIR, f"{build_id}.url")
-        with open(job_file, "w") as f:
-            f.write(f"{job_repo} {job_api_url}")
+        # Post to pubsub
+        try:
+            blob = {
+                "build_id": build_id,
+                "workflow": job_id,
+                "repository": job_repo,
+                "actor": job_actor,
+                "jobs_url": job_api_url,
+                "status": job_status,
+            }
+            # post to /github/$repo.git/actions/$workflow-id
+            requests.post(f"https://pubsub.apache.org:2070/github/{job_repo}.git/actions/{job_id}", json=blob)
+        except requests.exceptions.RequestException:  # Ignore post failures
+            pass
 
     if not recipient:  # No address configured, skip!
         return f"[skipped] {job_repo} {job_id} {job_status}"
