@@ -32,6 +32,7 @@ JOB_SUCCEEDED = open("templates/job_fixed.txt").read()
 JOB_STATUS_SUCCESS = "success"
 JOB_STATUS_FAILURE = "failure"
 REPO_ROOT = "/x1/repos/asf"
+JOB_QUEUE_DIR = "/x1/ghajobs"
 jobs = {}
 
 def get_recipient(repo):
@@ -60,11 +61,19 @@ def parse_payload(run):
     job_repo = run.get("repository", {}).get("name", "infrastructure-unknown")
     job_actor = run.get("actor", {}).get("login", "github")
     job_trigger = run.get("triggering_actor", {}).get("login", "github[bot]")
+    build_id = run.get("id", "")
     trigger_hash = run.get("head_commit", {}).get("id")
     trigger_log = run.get("head_commit", {}).get("message")
     trigger_author = run.get("head_commit", {}).get("author", {}).get("name", "??")
     trigger_email = run.get("head_commit", {}).get("author", {}).get("email", "??")
     recipient = get_recipient(job_repo)
+    # Log job api url for usage stats later on
+    job_api_url = run.get("jobs_url", "")
+    if job_api_url and build_id:
+        job_file = os.path.join(JOB_QUEUE_DIR, f"{build_id}.url")
+        with open(job_file, "w") as f:
+            f.write(f"{job_repo} {job_api_url}")
+
     if not recipient:  # No address configured, skip!
         return f"[skipped] {job_repo} {job_id} {job_status}"
     if job_id not in jobs:
