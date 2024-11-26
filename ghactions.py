@@ -26,6 +26,10 @@ import time
 
 """Simple GHA Workflow Status Notifier"""
 
+# These are just mirrors, but should have build status emailed nonetheless.
+SVN_MIRRORS = {
+    "subversion": "notifications@subversion.apache.org",  # https://github.com/apache/subversion
+}
 
 JOB_FAILED = open("templates/job_failed.txt").read()
 JOB_SUCCEEDED = open("templates/job_fixed.txt").read()
@@ -35,6 +39,8 @@ REPO_ROOT = "/x1/repos/asf"
 jobs = {}
 
 def get_recipient(repo):
+    if repo in SVN_MIRRORS:
+        return SVN_MIRRORS[repo]
     yaml_path = os.path.join(REPO_ROOT, f"{repo}.git", "notifications.yaml")
     if time.time() > 1649016000 and os.path.exists(yaml_path):  # Only active after 3rd of april 2022
         yml = yaml.safe_load(open(yaml_path, "r").read())
