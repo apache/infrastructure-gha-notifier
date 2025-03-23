@@ -65,7 +65,7 @@ def parse_payload(run):
     job_url = run.get("html_url", "")
     job_id = run.get("workflow_id", "")
     job_repo = run.get("repository", {}).get("name", "infrastructure-unknown")
-    job_branch = run.get("TBA", "???") # FIX: how do we get this?
+    job_branch = run.get("head_branch", "???")
     job_actor = run.get("actor", {}).get("login", "github")
     job_trigger = run.get("triggering_actor", {}).get("login", "github[bot]")
     build_id = run.get("id", "")
