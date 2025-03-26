@@ -11,6 +11,7 @@ If you wish to update the email template(s), please do so via a Pull Request.
 You may use the following variables in the templates:
 
 - `{job_repo}`: The repository name (sans the .git extension) that the job ran on
+- `{job_branch}`: The branch name that the job ran on
 - `{job_name}`: The name of the GHA job that ran
 - `{job_status}`: The status (success/failure) of the run
 - `{job_url}`: The URL to the GHA summary for the run

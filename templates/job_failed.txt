@@ -1,6 +1,6 @@
-[GH] ({job_repo}): Workflow run "{job_name}" failed!
+[GH] ({job_repo}/{job_branch}): Workflow run "{job_name}" failed!
 -- 
-The GitHub Actions job "{job_name}" on {job_repo}.git has failed.
+The GitHub Actions job "{job_name}" on {job_repo}.git/{job_branch} has failed.
 Run started by GitHub user {job_actor} (triggered by {job_trigger}).
 
 Head commit for run:
