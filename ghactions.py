@@ -29,6 +29,7 @@ import time
 # These are just mirrors, but should have build status emailed nonetheless.
 SVN_MIRRORS = {
     "subversion": "notifications@subversion.apache.org",  # https://github.com/apache/subversion
+    "serf": "notifications@serf.apache.org", # https://github.com/apache/serf
 }
 
 JOB_FAILED = open("templates/job_failed.txt").read()
